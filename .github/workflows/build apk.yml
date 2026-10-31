@@ -131,13 +131,3 @@ jobs:
           make_latest: true
           prerelease: false
           body: |
-            ## تطبيق ERSEL للأندرويد — بناء ${{ github.run_number }}
-
-            - **تحميل التطبيق:** `ersel.apk` (أندرويد 7.0 وأحدث)
-            - **نسخة الاستضافة:** `ersel-htdocs.zip` — فكّ ضغطها داخل `htdocs` مباشرة (index.html في الجذر)
-            - **التوقيع:** ${{ steps.signing.outputs.signed == 'true' && 'مفتاح الإصدار الرسمي' || 'مفتاح debug — للتجربة فقط' }}
-            - **SHA-256:** `${{ steps.apk.outputs.sha256 }}`
-            - **الفرع:** `${{ github.ref_name }}` · **آخر تعديل:** ${{ github.event.head_commit.message || 'تشغيل يدوي' }}
-
-            التثبيت: نزّل الملف على الهاتف، افتحه، واسمح بالتثبيت من هذا المصدر مرة واحدة.
-            الإشعارات تعمل بصوت مخصّص بعد السماح بها من داخل التطبيق.
