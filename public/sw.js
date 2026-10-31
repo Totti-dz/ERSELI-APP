@@ -10,7 +10,7 @@
  *  - Everything else same-origin uses stale-while-revalidate.
  *  - Cross-origin requests (Supabase API, tiles) are never intercepted.
  */
-const VERSION = 'ersel-shell-v3';
+const VERSION = 'ersel-shell-v4';
 const SHELL = ['/', '/manifest.webmanifest', '/icon.svg', '/brand/logo-mark.webp'];
 
 self.addEventListener('install', event => {
@@ -81,6 +81,9 @@ self.addEventListener('fetch', event => {
     return;
   }
   if (url.origin !== self.location.origin) return;
+
+  // config.js يُعدَّل على الاستضافة: لا يُخزَّن أبدًا حتى يظهر التعديل فورًا.
+  if (url.pathname === '/config.js' || url.pathname === '/check.html') return;
 
   if (isNavigation(request)) {
     event.respondWith(networkFirst(request));

@@ -15,8 +15,8 @@
 # لا يحتاج Android Studio: مشروع android/ يُولَّد داخل التشغيل نفسه
 # عبر scripts/android-init.mjs (Capacitor + الأيقونة + الصوت).
 #
-# إعداد مرة واحدة (Settings ← Secrets and variables ← Actions ← Variables):
-#   VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY
+# الإعداد: عدّل public/config.js (supabaseUrl و supabaseAnonKey) مرة واحدة.
+#   متغيرات VITE_SUPABASE_* في GitHub اختيارية (احتياط فقط) ولم تعد لازمة.
 # اختياري للتوقيع الرسمي (Secrets):
 #   ERSEL_KEYSTORE_BASE64, ERSEL_KEYSTORE_PASSWORD,
 #   ERSEL_KEY_ALIAS, ERSEL_KEY_PASSWORD
@@ -72,6 +72,14 @@ jobs:
           # يُطبع داخل التطبيق ويُقارن بآخر إصدار ليعرف المستخدم أن هناك تحديثًا.
           VITE_APP_BUILD: ${{ github.run_number }}
         run: npm run build
+
+      - name: التأكد من أن الإعداد مدمج (config.js)
+        run: |
+          set -euo pipefail
+          test -f dist/config.js || { echo "::error::dist/config.js مفقود (public/config.js)"; exit 1; }
+          grep -q 'supabase\.co' dist/config.js || { echo "::error::supabaseUrl غير مضبوط في public/config.js"; exit 1; }
+          if grep -qE 'YOUR_|xxxx' dist/config.js; then echo "::error::config.js ما زال يحتوي قيمًا تجريبية"; exit 1; fi
+          test -f dist/check.html || { echo "::error::dist/check.html مفقود"; exit 1; }
 
       - name: تجهيز نسخة الاستضافة (htdocs)
         run: |
